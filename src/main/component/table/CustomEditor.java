@@ -1,6 +1,6 @@
-package JetBrainsTableEditor.component.table;
+package main.component.table;
 
-import JetBrainsTableEditor.model.CellModel;
+import main.model.CellModel;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;

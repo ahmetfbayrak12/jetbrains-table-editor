@@ -1,6 +1,6 @@
-package JetBrainsTableEditor.observer;
+package main.observer;
 
-import JetBrainsTableEditor.model.CellModel;
+import main.model.CellModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;

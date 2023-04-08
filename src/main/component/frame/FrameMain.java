@@ -1,13 +1,13 @@
-package JetBrainsTableEditor.component.frame;
+package main.component.frame;
 
-import JetBrainsTableEditor.Constant.Constants;
-import JetBrainsTableEditor.component.textfield.FormulaBar;
-import JetBrainsTableEditor.component.table.CustomEditor;
-import JetBrainsTableEditor.component.table.CustomTableCellRenderer;
-import JetBrainsTableEditor.component.table.TableComponent;
-import JetBrainsTableEditor.model.CellModel;
-import JetBrainsTableEditor.model.TableModel;
-import JetBrainsTableEditor.observer.Publisher;
+import main.Constant.Constants;
+import main.component.textfield.FormulaBar;
+import main.component.table.CustomEditor;
+import main.component.table.CustomTableCellRenderer;
+import main.component.table.TableComponent;
+import main.model.CellModel;
+import main.model.TableModel;
+import main.observer.Publisher;
 
 import javax.swing.*;
 import java.awt.*;

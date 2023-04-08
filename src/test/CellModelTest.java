@@ -1,6 +1,6 @@
 package test;
 
-import JetBrainsTableEditor.model.CellModel;
+import main.model.CellModel;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

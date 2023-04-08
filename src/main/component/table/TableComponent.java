@@ -1,7 +1,7 @@
-package JetBrainsTableEditor.component.table;
+package main.component.table;
 
-import JetBrainsTableEditor.observer.IObserver;
-import JetBrainsTableEditor.observer.Publisher;
+import main.observer.IObserver;
+import main.observer.Publisher;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

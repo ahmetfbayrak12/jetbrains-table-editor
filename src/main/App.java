@@ -1,6 +1,6 @@
-package JetBrainsTableEditor;
+package main;
 
-import JetBrainsTableEditor.component.frame.FrameMain;
+import main.component.frame.FrameMain;
 
 import javax.swing.*;
 

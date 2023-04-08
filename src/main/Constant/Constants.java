@@ -1,4 +1,4 @@
-package JetBrainsTableEditor.Constant;
+package main.Constant;
 
 public final class Constants {
     public static final String TABLE_COMPONENT_KEYWORD = "tableComponent";

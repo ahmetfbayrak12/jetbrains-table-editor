@@ -1,6 +1,6 @@
-package JetBrainsTableEditor.model;
+package main.model;
 
-import JetBrainsTableEditor.observer.IObserver;
+import main.observer.IObserver;
 
 public class CellModel implements IObserver {
     private String uniqueKey;

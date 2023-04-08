@@ -1,4 +1,4 @@
-package JetBrainsTableEditor.component.table;
+package main.component.table;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
