@@ -1,7 +1,7 @@
 package JetBrainsTableEditor.model;
 
-import JetBrainsTableEditor.IObserver;
-import JetBrainsTableEditor.Publisher;
+import JetBrainsTableEditor.observer.IObserver;
+import JetBrainsTableEditor.observer.Publisher;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;

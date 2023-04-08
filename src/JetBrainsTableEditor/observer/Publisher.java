@@ -1,4 +1,4 @@
-package JetBrainsTableEditor;
+package JetBrainsTableEditor.observer;
 
 import JetBrainsTableEditor.model.CellModel;
 

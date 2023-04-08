@@ -1,5 +1,7 @@
 package JetBrainsTableEditor;
 
+import JetBrainsTableEditor.component.frame.FrameMain;
+
 import javax.swing.*;
 
 public class App {

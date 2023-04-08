@@ -1,7 +1,7 @@
-package JetBrainsTableEditor.component;
+package JetBrainsTableEditor.component.textfield;
 
-import JetBrainsTableEditor.IObserver;
-import JetBrainsTableEditor.Publisher;
+import JetBrainsTableEditor.observer.IObserver;
+import JetBrainsTableEditor.observer.Publisher;
 
 import javax.swing.*;
 import java.awt.event.*;
