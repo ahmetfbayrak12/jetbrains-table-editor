@@ -18,7 +18,7 @@ public class CellModel implements IObserver {
         private String formula = "";
         private int rowIndex;
         private int columnIndex;
-        private String uniqueKey = rowIndex + "" + columnIndex;
+        private String uniqueKey;
 
         public Builder setUniqueKey(String uniqueKey) {
             this.uniqueKey = uniqueKey;
@@ -46,6 +46,9 @@ public class CellModel implements IObserver {
         }
 
         public CellModel build() {
+            if (uniqueKey == null) {
+                uniqueKey = rowIndex + "" + columnIndex;
+            }
             CellModel cellModel = new CellModel();
             cellModel.setFormula(this.formula);
             cellModel.setShownValue(this.shownValue);
