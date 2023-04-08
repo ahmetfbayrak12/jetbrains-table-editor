@@ -1,7 +1,13 @@
+package JetBrainsTableEditor;
+
+import JetBrainsTableEditor.Constant.Constants;
+import JetBrainsTableEditor.component.FormulaBar;
+import JetBrainsTableEditor.component.TableComponent;
+import JetBrainsTableEditor.model.CellModel;
+import JetBrainsTableEditor.model.TableModel;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class FrameMain extends JFrame {
 
@@ -26,7 +32,7 @@ public class FrameMain extends JFrame {
             }
         }
 
-        // Create table model to define data structure and content for the table
+        // Create table JetBrainsTableEditor.model to define data structure and content for the table
         TableModel tableModel = new TableModel(columnNames);
 
         // Create cell renderer to customize the appearance (change font, color and other visual attributes)

@@ -1,3 +1,8 @@
+package JetBrainsTableEditor.model;
+
+import JetBrainsTableEditor.IObserver;
+import JetBrainsTableEditor.Publisher;
+
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 
@@ -42,7 +47,7 @@ public class TableModel extends AbstractTableModel implements IObserver {
 
 
     public Class getColumnClass(int col) {
-        //return CellModel.class;
+        //return JetBrainsTableEditor.CellModel.class;
         return Object.class;
     }
 

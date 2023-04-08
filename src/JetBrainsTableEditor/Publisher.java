@@ -1,3 +1,7 @@
+package JetBrainsTableEditor;
+
+import JetBrainsTableEditor.model.CellModel;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

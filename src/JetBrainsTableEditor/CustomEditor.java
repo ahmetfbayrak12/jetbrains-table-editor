@@ -1,6 +1,9 @@
+package JetBrainsTableEditor;
+
+import JetBrainsTableEditor.model.CellModel;
+
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
-import javax.swing.text.TableView;
 import java.awt.*;
 
 public class CustomEditor extends AbstractCellEditor implements TableCellEditor {

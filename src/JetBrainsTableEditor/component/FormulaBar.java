@@ -1,3 +1,8 @@
+package JetBrainsTableEditor.component;
+
+import JetBrainsTableEditor.IObserver;
+import JetBrainsTableEditor.Publisher;
+
 import javax.swing.*;
 import java.awt.event.*;
 

@@ -1,3 +1,5 @@
+package JetBrainsTableEditor;
+
 import javax.swing.*;
 
 public class App {

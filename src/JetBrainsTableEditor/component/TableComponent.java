@@ -1,5 +1,12 @@
+package JetBrainsTableEditor.component;
+
+import JetBrainsTableEditor.CustomTableCellRenderer;
+import JetBrainsTableEditor.IObserver;
+import JetBrainsTableEditor.Publisher;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableModel;
 import java.awt.event.*;
 
 public class TableComponent extends JTable implements IObserver, MouseListener, KeyListener {
@@ -8,9 +15,9 @@ public class TableComponent extends JTable implements IObserver, MouseListener, 
         this.setFillsViewportHeight(true);
         this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         // pass to the Object.class since I want to apply all cells
-        // but why it does not work when I pass CellModel.class?
-        //table.setDefaultRenderer(CellModel.class, renderer);
-        //table.setDefaultEditor(CellModel.class, editor);
+        // but why it does not work when I pass JetBrainsTableEditor.CellModel.class?
+        //table.setDefaultRenderer(JetBrainsTableEditor.CellModel.class, renderer);
+        //table.setDefaultEditor(JetBrainsTableEditor.model.CellModel.class, editor);
         this.setDefaultRenderer(Object.class, renderer);
         addMouseListener(this);
         addKeyListener(this);

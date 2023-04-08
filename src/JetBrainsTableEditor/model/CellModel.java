@@ -1,3 +1,7 @@
+package JetBrainsTableEditor.model;
+
+import JetBrainsTableEditor.IObserver;
+
 public class CellModel implements IObserver {
     private String uniqueKey;
     private int rowIndex;
