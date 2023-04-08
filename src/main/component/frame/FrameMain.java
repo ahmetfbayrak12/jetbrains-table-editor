@@ -1,6 +1,5 @@
 package main.component.frame;
 
-import main.Constant.Constants;
 import main.component.textfield.FormulaBar;
 import main.component.table.CustomEditor;
 import main.component.table.CustomTableCellRenderer;
@@ -27,19 +26,19 @@ public class FrameMain extends JFrame {
         String[] columnNames = new String[]{"A", "B", "C"};
 
         // create cells
-        for (int rowIndex = 0; rowIndex < 3; rowIndex++) {
-            for (int columnIndex = 0; columnIndex < 3; columnIndex++) {
+        for (int rowIndex = 0; rowIndex < columnNames.length; rowIndex++) {
+            for (int columnIndex = 0; columnIndex < columnNames.length; columnIndex++) {
                 CellModel newCell = new CellModel.Builder().setColumnIndex(columnIndex).setRowIndex(rowIndex).build();
                 pub.getCells().put(rowIndex + "" + columnIndex, newCell);
                 pub.addObserver(newCell);
             }
         }
 
-        // Create table JetBrainsTableEditor.model to define data structure and content for the table
+        // Create table model to define data structure and content for the table
         TableModel tableModel = new TableModel(columnNames);
 
-        // Create cell renderer to customize the appearance (change font, color and other visual attributes)
-        // of the cells based on their data type or other criteria
+        // Create cell renderer to customize the appearance (change font, color and other visual
+        // attributes) of the cells based on their data type or other criteria
         CustomTableCellRenderer renderer = new CustomTableCellRenderer();
 
         // Create editor
@@ -54,8 +53,6 @@ public class FrameMain extends JFrame {
 
         // Create the formula bar
         FormulaBar formulaBar = new FormulaBar();
-        formulaBar.putClientProperty(Constants.TABLE_COMPONENT_KEYWORD, table);
-        formulaBar.putClientProperty(Constants.TABLE_MODEL_KEYWORD, tableModel);
         add(formulaBar, BorderLayout.NORTH);
         pub.addObserver(formulaBar);
 

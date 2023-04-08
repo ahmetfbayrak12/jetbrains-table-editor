@@ -1,5 +1,6 @@
 package main.model;
 
+import main.constant.ErrorMessageConstants;
 import main.observer.IObserver;
 import main.observer.Publisher;
 
@@ -36,7 +37,7 @@ public class TableModel extends AbstractTableModel implements IObserver {
             Publisher.getInstance().getCells().get(row + "" + col).setShownValue(Double.parseDouble(input));
             Publisher.getInstance().notifyObservers(row, col, this);
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(null, "Please type only numbers not characters", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, ErrorMessageConstants.INVALID_INPUT_ERROR_MESSAGE, "Error", JOptionPane.ERROR_MESSAGE);
         }
 
     }
