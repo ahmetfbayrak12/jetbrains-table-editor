@@ -1,4 +1,4 @@
-package test;
+package test.model;
 
 import main.model.CellModel;
 import org.junit.Test;
