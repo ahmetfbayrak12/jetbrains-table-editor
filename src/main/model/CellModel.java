@@ -1,13 +1,12 @@
 package main.model;
 
-import main.observer.IObserver;
-
-public class CellModel implements IObserver {
+public class CellModel {
     private String uniqueKey;
     private int rowIndex;
     private int columnIndex;
     private Double shownValue;
     private String formula;
+    private String columnName;
 
     private CellModel() {
         // private constructor for builder pattern
@@ -19,6 +18,7 @@ public class CellModel implements IObserver {
         private int rowIndex;
         private int columnIndex;
         private String uniqueKey;
+        private String columnName;
 
         public Builder setUniqueKey(String uniqueKey) {
             this.uniqueKey = uniqueKey;
@@ -45,6 +45,11 @@ public class CellModel implements IObserver {
             return this;
         }
 
+        public Builder setColumnName(String columnName) {
+            this.columnName = columnName;
+            return this;
+        }
+
         public CellModel build() {
             if (uniqueKey == null) {
                 uniqueKey = rowIndex + "" + columnIndex;
@@ -55,6 +60,7 @@ public class CellModel implements IObserver {
             cellModel.setColumnIndex(this.columnIndex);
             cellModel.setRowIndex(this.rowIndex);
             cellModel.setUniqueKey(this.uniqueKey);
+            cellModel.setColumnName(this.columnName);
             return cellModel;
         }
     }
@@ -79,6 +85,10 @@ public class CellModel implements IObserver {
         this.columnIndex = columnIndex;
     }
 
+    private void setColumnName(String columnName) {
+        this.columnName = columnName;
+    }
+
     public Double getShownValue() {
         return shownValue;
     }
@@ -99,8 +109,7 @@ public class CellModel implements IObserver {
         return uniqueKey;
     }
 
-    @Override
-    public void update(int rowIndex, int columnIndex, IObserver sourceComponent) {
-
+    public String getColumnName() {
+        return columnName;
     }
 }

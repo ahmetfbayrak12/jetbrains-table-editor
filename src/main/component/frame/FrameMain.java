@@ -26,11 +26,10 @@ public class FrameMain extends JFrame {
         String[] columnNames = new String[]{"A", "B", "C"};
 
         // create cells
-        for (int rowIndex = 0; rowIndex < columnNames.length; rowIndex++) {
-            for (int columnIndex = 0; columnIndex < columnNames.length; columnIndex++) {
-                CellModel newCell = new CellModel.Builder().setColumnIndex(columnIndex).setRowIndex(rowIndex).build();
+        for (int columnIndex = 0; columnIndex < columnNames.length; columnIndex++) {
+            for (int rowIndex = 0; rowIndex < columnNames.length; rowIndex++) {
+                CellModel newCell = new CellModel.Builder().setColumnIndex(columnIndex).setRowIndex(rowIndex).setColumnName(columnNames[columnIndex]).build();
                 pub.getCells().put(rowIndex + "" + columnIndex, newCell);
-                pub.addObserver(newCell);
             }
         }
 

@@ -1,73 +1,67 @@
 package main.component.textfield;
 
+import main.constant.ErrorMessageConstants;
+import main.listener.IDefaultKeyListener;
+import main.model.CellModel;
 import main.observer.IObserver;
 import main.observer.Publisher;
+import main.util.FormulaParser;
 
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
 
-public class FormulaBar extends JTextField implements IObserver, KeyListener, ActionListener {
+public class FormulaBar extends JTextField implements IObserver, IDefaultKeyListener {
     private int selectedRow = -1;
     private int selectedColumn = -1;
 
     public FormulaBar() {
         addKeyListener(this);
-        addActionListener(this);
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-
-    }
-
-    @Override
-    protected void processKeyEvent(KeyEvent e) {
-        super.processKeyEvent(e);
-        if (e.getID() == KeyEvent.KEY_PRESSED) {
-            if (selectedRow >= 0 && selectedColumn >= 0) {
-                StringBuilder currentTextFieldValue = new StringBuilder(getText());
-                if (e.getKeyChar() == 8 && currentTextFieldValue.length() != 0) {
-                    char lastChar = currentTextFieldValue.charAt(currentTextFieldValue.length() - 1);
-                    if (lastChar > 20) {
-                        currentTextFieldValue.deleteCharAt(currentTextFieldValue.length() - 1);
-                    }
-                } else if (e.getKeyChar() > 20) {
-                    currentTextFieldValue.append(e.getKeyChar());
-                }
-                try {
-                    Publisher.getInstance().getCells().get(selectedRow + "" + selectedColumn).setShownValue(Double.parseDouble(currentTextFieldValue.toString()));
-                    Publisher.getInstance().notifyObservers(selectedRow, selectedColumn, this);
-                } catch (NumberFormatException ex) {
-                    Publisher.getInstance().getCells().get(selectedRow + "" + selectedColumn).setShownValue(null);
-                    Publisher.getInstance().notifyObservers(selectedRow, selectedColumn, this);
-                }
+        if (selectedRow >= 0 && selectedColumn >= 0) {
+            StringBuilder currentTextFieldValue = new StringBuilder(getText());
+            if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE && !currentTextFieldValue.isEmpty()) {
+                currentTextFieldValue.deleteCharAt(currentTextFieldValue.length() - 1);
+            } else if (e.getKeyChar() >= KeyEvent.VK_0 && e.getKeyChar() <= KeyEvent.VK_9) {
+                currentTextFieldValue.insert(getCaretPosition(), e.getKeyChar());
+            } else if (e.getKeyChar() == KeyEvent.VK_ENTER && !currentTextFieldValue.isEmpty()) {
+                currentTextFieldValue = new StringBuilder(parseFormula(getText()));
             }
+            updateAndNotify(currentTextFieldValue);
+            Publisher.getInstance().notifySubsribers(selectedRow, selectedColumn);
         }
     }
 
-    @Override
-    public void keyReleased(KeyEvent e) {
+    private void updateAndNotify(StringBuilder currentTextFieldValue) {
+        try {
+            if (currentTextFieldValue.charAt(0) == '=') {
+                Publisher.getInstance().getCells().get(selectedRow + "" + selectedColumn).setFormula(currentTextFieldValue.toString());
+            } else {
+                Publisher.getInstance().getCells().get(selectedRow + "" + selectedColumn).setShownValue(Double.valueOf(currentTextFieldValue.toString()));
+            }
+            Publisher.getInstance().notifyObservers(selectedRow, selectedColumn, this);
+        } catch (NumberFormatException ex) {
+            Publisher.getInstance().getCells().get(selectedRow + "" + selectedColumn).setShownValue(null);
+            Publisher.getInstance().getCells().get(selectedRow + "" + selectedColumn).setFormula(null);
+            Publisher.getInstance().notifyObservers(selectedRow, selectedColumn, this);
+        }
 
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-    }
-
-    private Double evaluateFormula(String formula) {
-        // Parse the formula and evaluate it
-        // Use the Shunting Yard algorithm or a similar algorithm to
-        // convert infix notation to postfix notation
-        // Update the variables map with any variable values in the formula
-        // Evaluate the postfix notation using a stack
-        // Return the result as a Double
-        return 5.0;
+    private String parseFormula(String formula) {
+        if (formula.charAt(0) == '=') {
+            FormulaParser formulaParser = new FormulaParser();
+            String calculatedValue = formulaParser.parse(formula, selectedRow, selectedColumn) + "";
+            Publisher.getInstance().getCells().get(selectedRow + "" + selectedColumn).setFormula("null".equals(calculatedValue) ? null : formula);
+            return calculatedValue;
+        } else if (formula.matches(".*[^0-9].*")) {
+            JOptionPane.showMessageDialog(null, ErrorMessageConstants.FORMULA_ERROR_MESSAGE, "Error", JOptionPane.ERROR_MESSAGE);
+            return "";
+        }
+        Publisher.getInstance().getCells().get(selectedRow + "" + selectedColumn).setFormula(null);
+        return formula;
     }
 
     @Override
@@ -78,7 +72,9 @@ public class FormulaBar extends JTextField implements IObserver, KeyListener, Ac
 
             if (rowIndex >= 0 && columnIndex >= 0) {
                 try {
-                    setText(Publisher.getInstance().getCells().get(rowIndex + "" + columnIndex).getShownValue().toString());
+                    CellModel updatedCellModel = Publisher.getInstance().getCells().get(rowIndex + "" + columnIndex);
+                    boolean doesFormulaExist = updatedCellModel.getFormula() != null && !(updatedCellModel.getFormula().isEmpty());
+                    setText(doesFormulaExist ? updatedCellModel.getFormula() : updatedCellModel.getShownValue().toString());
                 } catch (NullPointerException ex) {
                     setText("");
                 }

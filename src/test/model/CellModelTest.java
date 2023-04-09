@@ -14,11 +14,13 @@ public class CellModelTest {
                 .setColumnIndex(2)
                 .setShownValue(1.9)
                 .setFormula("A1 + 2")
+                .setColumnName("B")
                 .build();
         assertEquals(1, cellModel.getRowIndex());
         assertEquals(2, cellModel.getColumnIndex());
         assertEquals(1.9, cellModel.getShownValue(), 0.0);
         assertEquals("A1 + 2", cellModel.getFormula());
         assertEquals("12", cellModel.getUniqueKey());
+        assertEquals("B", cellModel.getColumnName());
     }
 }

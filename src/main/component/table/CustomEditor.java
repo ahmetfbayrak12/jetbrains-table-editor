@@ -38,10 +38,4 @@ public class CustomEditor extends AbstractCellEditor implements TableCellEditor 
      public Object getCellEditorValue() {
         return model.getShownValue();
      }
-
-    @Override
-    public boolean stopCellEditing() {
-        System.out.println(getCellEditorValue());
-        return super.stopCellEditing();
-    }
 }

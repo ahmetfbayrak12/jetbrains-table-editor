@@ -3,9 +3,14 @@ package main.model;
 import main.constant.ErrorMessageConstants;
 import main.observer.IObserver;
 import main.observer.Publisher;
+import main.util.FormulaParser;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class TableModel extends AbstractTableModel implements IObserver {
     private final String[] columnNames;
@@ -34,8 +39,11 @@ public class TableModel extends AbstractTableModel implements IObserver {
     public void setValueAt(Object value, int row, int col) {
         try {
             String input = value.toString();
-            Publisher.getInstance().getCells().get(row + "" + col).setShownValue(Double.parseDouble(input));
-            Publisher.getInstance().notifyObservers(row, col, this);
+            Publisher pub = Publisher.getInstance();
+            pub.getCells().get(row + "" + col).setShownValue(input.isEmpty() ? null : Double.parseDouble(input));
+            pub.getCells().get(row + "" + col).setFormula(null);
+            pub.notifySubsribers(row, col);
+            pub.notifyObservers(row, col, this);
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, ErrorMessageConstants.INVALID_INPUT_ERROR_MESSAGE, "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -46,9 +54,7 @@ public class TableModel extends AbstractTableModel implements IObserver {
         return columnNames[col];
     }
 
-
     public Class getColumnClass(int col) {
-        //return JetBrainsTableEditor.CellModel.class;
         return Object.class;
     }
 
