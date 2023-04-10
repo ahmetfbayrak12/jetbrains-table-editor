@@ -4,7 +4,8 @@ import main.strategy.formula.FormulaCalculatorStrategy;
 
 public class FourOperationsCalculator implements FormulaCalculatorStrategy {
     @Override
-    public void parse(String formula) {
-        System.out.println("FOUR OPERATIONS STRATEGY");
+    public double calculate(double... args) {
+        //TODO
+        return 0.0;
     }
 }

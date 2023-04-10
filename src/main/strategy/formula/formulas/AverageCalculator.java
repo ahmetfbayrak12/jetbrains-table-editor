@@ -4,7 +4,7 @@ import main.strategy.formula.FormulaCalculatorStrategy;
 
 public class AverageCalculator implements FormulaCalculatorStrategy {
     @Override
-    public void parse(String formula) {
-        System.out.println("AVERAGE CALCULATOR");
+    public double calculate(double... args) {
+        return (args[0] + args[1]) / 2.0;
     }
 }

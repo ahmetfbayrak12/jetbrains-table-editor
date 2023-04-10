@@ -4,7 +4,7 @@ import main.strategy.formula.FormulaCalculatorStrategy;
 
 public class PowerOfCalculator implements FormulaCalculatorStrategy {
     @Override
-    public void parse(String formula) {
-        System.out.println("POWER OF FORMULA");
+    public double calculate(double... args) {
+        return Math.pow(args[0], args[1]);
     }
 }

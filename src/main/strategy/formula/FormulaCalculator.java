@@ -7,7 +7,7 @@ public class FormulaCalculator {
         this.formulaCalculatorStrategy = formulaCalculatorStrategy;
     }
 
-    public void parse(String formula) {
-        formulaCalculatorStrategy.parse(formula);
+    public double calculate(double... args) {
+        return formulaCalculatorStrategy.calculate(args);
     }
 }

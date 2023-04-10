@@ -3,11 +3,14 @@ package main.util;
 import main.constant.ErrorMessageConstants;
 import main.model.CellModel;
 import main.observer.Publisher;
+import main.strategy.formula.FormulaCalculator;
+import main.strategy.formula.formulas.AverageCalculator;
+import main.strategy.formula.formulas.DivideCalculator;
+import main.strategy.formula.formulas.PowerOfCalculator;
+import main.strategy.formula.formulas.SquareRootCalculator;
 
 import javax.swing.*;
 import java.util.*;
-
-import static main.constant.ErrorMessageConstants.DIVISION_BY_ZERO_ERROR_MESSAGE;
 
 public class FormulaParser {
 
@@ -27,8 +30,8 @@ public class FormulaParser {
             } else {
                 if (sb.length() > 0) {
                     String token = sb.toString();
-                    if (token.equalsIgnoreCase("pow")) {
-                        tokens.add(token);
+                    if (token.equalsIgnoreCase("pow") || token.equalsIgnoreCase("sqrt") || token.equalsIgnoreCase("avg")) {
+                        tokens.add(token.toUpperCase());
                     } else if (isCellReference(token)) {
                         tokens.add(token);
                     } else {
@@ -53,7 +56,7 @@ public class FormulaParser {
         }
         if (sb.length() > 0) {
             String token = sb.toString();
-            if (token.equalsIgnoreCase("pow")) {
+            if (token.equalsIgnoreCase("pow") || token.equalsIgnoreCase("sqrt") || token.equalsIgnoreCase("avg")) {
                 tokens.add(token);
             } else if (isCellReference(token)) {
                 tokens.add(token);
@@ -67,7 +70,7 @@ public class FormulaParser {
     // Evaluates an Excel formula represented as a list of tokens
     private Double evaluate(List<String> tokens, int selectedRow, int selectedColumn) {
         Stack<Double> values = new Stack<>();
-        Stack<Character> operators = new Stack<>();
+        Stack<String> operators = new Stack<>();
         boolean cellReferenceStarted = false;
         StringBuilder cellReferenceValue = new StringBuilder();
 
@@ -84,48 +87,57 @@ public class FormulaParser {
                             .filter(cell -> (cell.getColumnName() + (cell.getRowIndex() + 1)).equalsIgnoreCase(cellReferenceValue.toString()))
                             .findFirst().orElse(null);
                     try {
-                        values.push((referenceCell != null && referenceCell.getShownValue() != null) ? referenceCell.getShownValue() : 0d);
-                        Set<String> currentSubsribers = Publisher.getInstance().getSubscribers().getOrDefault(referenceCell.getUniqueKey(), new HashSet<>());
-                        currentSubsribers.add(selectedRow + "" + selectedColumn);
-                        Publisher.getInstance().getSubscribers().put(referenceCell.getUniqueKey(), currentSubsribers);
-                        cellReferenceStarted = false;
+                        boolean isSelfRef = (selectedRow + "" + selectedColumn).equals(referenceCell.getUniqueKey());
+                        if (isSelfRef) {
+                            JOptionPane.showMessageDialog(null, ErrorMessageConstants.SELF_REFERENCE_ERROR_MESSAGE, "Error", JOptionPane.ERROR_MESSAGE);
+                            return null;
+                        }
+                        boolean isLoop = Publisher.getInstance().getSubscribers().getOrDefault(selectedRow + "" + selectedColumn, new HashSet<>()).contains(referenceCell.getUniqueKey());
+                        if (isLoop) {
+                            JOptionPane.showMessageDialog(null, ErrorMessageConstants.LOOP_REFERENCE_ERROR_MESSAGE, "Error", JOptionPane.ERROR_MESSAGE);
+                            return null;
+                        } else {
+                            values.push(referenceCell.getShownValue() != null ? referenceCell.getShownValue() : 0d);
+                            Set<String> currentSubsribers = Publisher.getInstance().getSubscribers().getOrDefault(referenceCell.getUniqueKey(), new HashSet<>());
+                            currentSubsribers.add(selectedRow + "" + selectedColumn);
+                            Publisher.getInstance().getSubscribers().put(referenceCell.getUniqueKey(), currentSubsribers);
+                            cellReferenceStarted = false;
+                        }
                     } catch (NullPointerException ex) {
                         JOptionPane.showMessageDialog(null, ErrorMessageConstants.INVALID_REFERENCE_ERROR_MESSAGE, "Error", JOptionPane.ERROR_MESSAGE);
                         return null;
                     }
                 }
-                if (Character.isLetter(token.charAt(0))) {
+                if (token.length() > 1) {
+                    if (isOperatorValid(token)) {
+                        operators.push(token);
+                    } else {
+                        JOptionPane.showMessageDialog(null, ErrorMessageConstants.INVALID_OPERATOR_ERROR_MESSAGE, "Error", JOptionPane.ERROR_MESSAGE);
+                        return null;
+                    }
+                } else if (Character.isLetter(token.charAt(0))) {
                     cellReferenceValue.append(token);
                     cellReferenceStarted = true;
                 } else if (token.equals("(")) {
-                    operators.push('(');
+                    operators.push("(");
                 } else if (token.equals(")")) {
-                    while (operators.peek() != '(') {
-                        double result = applyOperator(operators.pop(), values.pop(), values.pop());
+                    while (!operators.peek().equalsIgnoreCase("(")) {
+                        double result = applyOperator(operators.pop(), values);
                         values.push(result);
                     }
                     operators.pop();
-                } else if (isOperator(token)) {
-                    while (!operators.isEmpty() && isOperator(String.valueOf(operators.peek())) && precedence(operators.peek()) >= precedence(token.charAt(0))) {
-                        double result = applyOperator(operators.pop(), values.pop(), values.pop());
+                } else if (isOperatorValid(token)) {
+                    while (!operators.isEmpty() && isOperatorValid(String.valueOf(operators.peek())) && precedence(operators.peek()) >= precedence(token)) {
+                        double result = applyOperator(operators.pop(), values);
                         values.push(result);
                     }
-                    operators.push(token.charAt(0));
+                    operators.push(token);
                 } else if (token.matches("[a-zA-Z]+\\(([0-9]+,)*[0-9]+\\)")) {
                     String[] args = token.substring(token.indexOf("(") + 1, token.indexOf(")")).split(",");
                     double[] argValues = new double[args.length];
                     for (int i = 0; i < args.length; i++) {
                         argValues[i] = Double.parseDouble(args[i]);
                     }
-                    System.out.println(token);
-                    System.out.println(token.substring(0, token.indexOf("(")));
-                    System.out.println(argValues);
-                /*
-                Function function = getFunction(token.substring(0, token.indexOf("(")));
-                double result = function.evaluate(argValues);
-                values.push(result);
-                */
-
                 }
             }
 
@@ -133,7 +145,7 @@ public class FormulaParser {
 
         while (!operators.isEmpty()) {
             try {
-                double result = applyOperator(operators.pop(), values.pop(), values.pop());
+                double result = applyOperator(operators.pop(), values);
                 values.push(result);
             } catch (IllegalArgumentException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -144,36 +156,53 @@ public class FormulaParser {
     }
 
     // Applies an operator to two operands
-    private static double applyOperator(char operator, double b, double a) {
-        switch (operator) {
-            case '+':
+    private static double applyOperator(String operator, Stack<Double> values) {
+        FormulaCalculator formulaCalculator = new FormulaCalculator();
+        double a = 0, b = 0;
+        if (!values.isEmpty()) {
+            a = values.pop();
+        }
+        if (!values.isEmpty()) {
+            b = values.pop();
+        }
+        switch (operator.toUpperCase()) {
+            case "+":
                 return a + b;
-            case '-':
+            case "-":
                 return a - b;
-            case '*':
+            case "*":
                 return a * b;
-            case '/':
-                if (b == 0) {
-                    throw new IllegalArgumentException(DIVISION_BY_ZERO_ERROR_MESSAGE);
-                }
-                return a / b;
-            case '^':
-                return Math.pow(a, b);
+            case "/":
+                formulaCalculator.setFormulaParserStrategy(new DivideCalculator());
+                return formulaCalculator.calculate(b, a);
+            case "^":
+            case "POW":
+                formulaCalculator.setFormulaParserStrategy(new PowerOfCalculator());
+                return formulaCalculator.calculate(b, a);
+            case "SQRT":
+                formulaCalculator.setFormulaParserStrategy(new SquareRootCalculator());
+                return formulaCalculator.calculate(a);
+            case "AVG":
+                formulaCalculator.setFormulaParserStrategy(new AverageCalculator());
+                return formulaCalculator.calculate(a, b);
             default:
                 throw new IllegalArgumentException("Invalid operator: " + operator);
         }
     }
 
     // Returns the precedence of an operator
-    private static int precedence(char operator) {
-        switch (operator) {
-            case '+':
-            case '-':
+    private static int precedence(String operator) {
+        switch (operator.toUpperCase()) {
+            case "+":
+            case "-":
                 return 1;
-            case '*':
-            case '/':
+            case "*":
+            case "/":
                 return 2;
-            case '^':
+            case "^":
+            case "POW":
+            case "SQRT":
+            case "AVG":
                 return 3;
             default:
                 throw new IllegalArgumentException("Invalid operator: " + operator);
@@ -184,13 +213,16 @@ public class FormulaParser {
         return str.matches("-?\\d+(\\.\\d+)?");
     }
 
-    private boolean isOperator(String str) {
-        switch (str) {
+    private boolean isOperatorValid(String str) {
+        switch (str.toUpperCase()) {
             case "+":
             case "-":
             case "*":
             case "/":
             case "^":
+            case "POW":
+            case "SQRT":
+            case "AVG":
                 return true;
             default:
                 return false;
