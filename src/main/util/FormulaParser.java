@@ -36,14 +36,10 @@ public class FormulaParser {
             } else {
                 if (sb.length() > 0) {
                     String token = sb.toString();
-                    if (token.equalsIgnoreCase(FormulaKeyConstants.POW_KEYWORD) ||
-                            token.equalsIgnoreCase(FormulaKeyConstants.SQRT_KEYWORD) ||
-                            token.equalsIgnoreCase(FormulaKeyConstants.AVERAGE_KEYWORD)) {
-                        tokens.add(token.toUpperCase());
-                    } else if (isCellReference(token)) {
+                    if (isCellReference(token)) {
                         tokens.add(token);
                     } else {
-                        tokens.add(token.toLowerCase());
+                        tokens.add(token.toUpperCase());
                     }
                     sb.setLength(0);
                 }
@@ -64,14 +60,10 @@ public class FormulaParser {
         }
         if (sb.length() > 0) {
             String token = sb.toString();
-            if (token.equalsIgnoreCase(FormulaKeyConstants.POW_KEYWORD) ||
-                    token.equalsIgnoreCase(FormulaKeyConstants.SQRT_KEYWORD) ||
-                    token.equalsIgnoreCase(FormulaKeyConstants.AVERAGE_KEYWORD)) {
-                tokens.add(token);
-            } else if (isCellReference(token)) {
+            if (isCellReference(token)) {
                 tokens.add(token);
             } else {
-                tokens.add(token.toLowerCase());
+                tokens.add(token.toUpperCase());
             }
         }
         return tokens;

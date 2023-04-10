@@ -46,6 +46,10 @@ public class Publisher {
         observers.remove(observer);
     }
 
+    public List<IObserver> getObservers() {
+        return observers;
+    }
+
 
     /*
      * Whenever a cell value is changed this method updates the cell

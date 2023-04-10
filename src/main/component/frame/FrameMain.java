@@ -1,8 +1,8 @@
 package main.component.frame;
 
-import main.component.textfield.FormulaBar;
 import main.component.table.CustomTableCellRenderer;
 import main.component.table.TableComponent;
+import main.component.textfield.FormulaBar;
 import main.constant.InformationMessageConstants;
 import main.model.CellModel;
 import main.model.TableModel;
