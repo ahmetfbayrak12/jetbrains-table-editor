@@ -47,10 +47,15 @@ public class FrameMain extends JFrame {
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Create the formula bar
+        // Create the formula bar and label
+        JLabel label = new JLabel("Formula Bar:");
         FormulaBar formulaBar = new FormulaBar();
-        add(formulaBar, BorderLayout.NORTH);
         pub.addObserver(formulaBar);
+
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(label, BorderLayout.NORTH);
+        panel.add(formulaBar, BorderLayout.CENTER);
+        add(panel, BorderLayout.NORTH);
 
         // Create the menu bar
         JMenuBar menuBar = new JMenuBar();
