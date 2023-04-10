@@ -5,11 +5,17 @@ import main.util.FormulaParser;
 
 import java.util.*;
 
+/*
+ * Observer pattern for notifying the cells and rerender table
+ *
+ * @author ahmetfbayrak
+ *
+ * */
 public class Publisher {
     private static Publisher instance;
     public Map<String, Set<String>> subscribers;
     public Map<String, CellModel> cells;
-    private List<IObserver> observers = new ArrayList<>();
+    private List<IObserver> observers;
 
     private Publisher() {
         subscribers = new HashMap<>();
@@ -40,11 +46,20 @@ public class Publisher {
         observers.remove(observer);
     }
 
+
+    /*
+     * Whenever a cell value is changed this method updates the cell
+     *
+     * @param changedRow: index of changed row
+     * @param changedCol: index of changedCol
+     * @param sourceComponent: observer object that updates come from
+     *
+     * */
     public void notifyObservers(int rowIndex, int columnIndex, IObserver sourceComponent) {
         for (IObserver observer : observers) {
             if (rowIndex >= 0 && columnIndex >= 0) {
-                for (String subsriber : subscribers.getOrDefault(rowIndex + "" + columnIndex, new HashSet<>())) {
-                    observer.update(Integer.parseInt(subsriber.substring(0, 1)), Integer.parseInt(subsriber.substring(1, 2)), sourceComponent);
+                for (String subscriber : subscribers.getOrDefault(rowIndex + "" + columnIndex, new HashSet<>())) {
+                    observer.update(Integer.parseInt(subscriber.substring(0, 1)), Integer.parseInt(subscriber.substring(1, 2)), sourceComponent);
                 }
                 observer.update(rowIndex, columnIndex, sourceComponent);
             }
@@ -52,11 +67,12 @@ public class Publisher {
     }
 
     /*
-    * Whenever a cell value is changed this method updates the referenced cells
-    *
-    * @param changedRow: index of changed row
-    * @param changedCol: index of changedCol
-    * */
+     * Whenever a cell value is changed this method updates the referenced cells
+     *
+     * @param changedRow: index of changed row
+     * @param changedCol: index of changedCol
+     *
+     * */
     public void notifySubsribers(int changedRow, int changedCol) {
         Set<String> subs = getSubscribers().getOrDefault(changedRow + "" + changedCol, new HashSet<>());
         if (!subs.isEmpty()) {

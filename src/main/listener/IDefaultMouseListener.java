@@ -26,5 +26,5 @@ public interface IDefaultMouseListener extends MouseListener {
     @Override
     default void mousePressed(MouseEvent e) {
 
-    };
+    }
 }

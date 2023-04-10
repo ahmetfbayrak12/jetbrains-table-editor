@@ -3,14 +3,9 @@ package main.model;
 import main.constant.ErrorMessageConstants;
 import main.observer.IObserver;
 import main.observer.Publisher;
-import main.util.FormulaParser;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class TableModel extends AbstractTableModel implements IObserver {
     private final String[] columnNames;

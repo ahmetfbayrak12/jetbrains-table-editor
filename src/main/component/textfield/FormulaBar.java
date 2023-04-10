@@ -42,7 +42,7 @@ public class FormulaBar extends JTextField implements IObserver, IDefaultKeyList
                 Publisher.getInstance().getCells().get(selectedRow + "" + selectedColumn).setShownValue(Double.valueOf(currentTextFieldValue.toString()));
             }
             Publisher.getInstance().notifyObservers(selectedRow, selectedColumn, this);
-        } catch (NumberFormatException | StringIndexOutOfBoundsException ex ){
+        } catch (NumberFormatException | StringIndexOutOfBoundsException ex) {
             Publisher.getInstance().getCells().get(selectedRow + "" + selectedColumn).setShownValue(null);
             Publisher.getInstance().getCells().get(selectedRow + "" + selectedColumn).setFormula(null);
             Publisher.getInstance().notifyObservers(selectedRow, selectedColumn, this);

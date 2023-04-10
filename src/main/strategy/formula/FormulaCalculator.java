@@ -1,5 +1,11 @@
 package main.strategy.formula;
 
+/*
+ * Strategy pattern for different formulas
+ *
+ * @author ahmetfbayrak
+ *
+ * */
 public class FormulaCalculator {
     private FormulaCalculatorStrategy formulaCalculatorStrategy;
 

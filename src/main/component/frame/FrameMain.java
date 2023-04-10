@@ -1,9 +1,9 @@
 package main.component.frame;
 
 import main.component.textfield.FormulaBar;
-import main.component.table.CustomEditor;
 import main.component.table.CustomTableCellRenderer;
 import main.component.table.TableComponent;
+import main.constant.InformationMessageConstants;
 import main.model.CellModel;
 import main.model.TableModel;
 import main.observer.Publisher;
@@ -40,9 +40,6 @@ public class FrameMain extends JFrame {
         // attributes) of the cells based on their data type or other criteria
         CustomTableCellRenderer renderer = new CustomTableCellRenderer();
 
-        // Create editor
-        CustomEditor editor = new CustomEditor();
-
         // Create table
         TableComponent table = new TableComponent(tableModel, renderer);
 
@@ -57,13 +54,14 @@ public class FrameMain extends JFrame {
 
         // Create the menu bar
         JMenuBar menuBar = new JMenuBar();
-        JMenu fileMenu = new JMenu("File");
-        JMenuItem openItem = new JMenuItem("Open");
-        JMenuItem saveItem = new JMenuItem("Save");
-        fileMenu.add(openItem);
-        fileMenu.add(saveItem);
+        JMenu fileMenu = new JMenu("Help");
+        JMenuItem infoItem = new JMenuItem("About");
+        fileMenu.add(infoItem);
         menuBar.add(fileMenu);
         setJMenuBar(menuBar);
+        infoItem.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, InformationMessageConstants.INFO_USAGE_FORMULA_MESSAGE);
+        });
 
         // Show the main window
         pack();

@@ -1,6 +1,7 @@
 package main.util;
 
 import main.constant.ErrorMessageConstants;
+import main.constant.FormulaKeyConstants;
 import main.model.CellModel;
 import main.observer.Publisher;
 import main.strategy.formula.FormulaCalculator;
@@ -12,11 +13,16 @@ import main.strategy.formula.formulas.SquareRootCalculator;
 import javax.swing.*;
 import java.util.*;
 
+/*
+ * Helper class for parsing and calculating the formula
+ *
+ * @author ahmetfbayrak
+ *
+ * */
 public class FormulaParser {
 
     public Double parse(String formula, int selectedRow, int selectedColumn) {
         List<String> tokens = tokenize(formula);
-        System.out.println(tokens);
         return evaluate(tokens, selectedRow, selectedColumn);
     }
 
@@ -30,7 +36,9 @@ public class FormulaParser {
             } else {
                 if (sb.length() > 0) {
                     String token = sb.toString();
-                    if (token.equalsIgnoreCase("pow") || token.equalsIgnoreCase("sqrt") || token.equalsIgnoreCase("avg")) {
+                    if (token.equalsIgnoreCase(FormulaKeyConstants.POW_KEYWORD) ||
+                            token.equalsIgnoreCase(FormulaKeyConstants.SQRT_KEYWORD) ||
+                            token.equalsIgnoreCase(FormulaKeyConstants.AVERAGE_KEYWORD)) {
                         tokens.add(token.toUpperCase());
                     } else if (isCellReference(token)) {
                         tokens.add(token);
@@ -56,7 +64,9 @@ public class FormulaParser {
         }
         if (sb.length() > 0) {
             String token = sb.toString();
-            if (token.equalsIgnoreCase("pow") || token.equalsIgnoreCase("sqrt") || token.equalsIgnoreCase("avg")) {
+            if (token.equalsIgnoreCase(FormulaKeyConstants.POW_KEYWORD) ||
+                    token.equalsIgnoreCase(FormulaKeyConstants.SQRT_KEYWORD) ||
+                    token.equalsIgnoreCase(FormulaKeyConstants.AVERAGE_KEYWORD)) {
                 tokens.add(token);
             } else if (isCellReference(token)) {
                 tokens.add(token);
@@ -87,11 +97,12 @@ public class FormulaParser {
                             .filter(cell -> (cell.getColumnName() + (cell.getRowIndex() + 1)).equalsIgnoreCase(cellReferenceValue.toString()))
                             .findFirst().orElse(null);
                     try {
-                        boolean isSelfRef = (selectedRow + "" + selectedColumn).equals(referenceCell.getUniqueKey());
+                        boolean isSelfRef = referenceCell != null && (selectedRow + "" + selectedColumn).equals(referenceCell.getUniqueKey());
                         if (isSelfRef) {
                             JOptionPane.showMessageDialog(null, ErrorMessageConstants.SELF_REFERENCE_ERROR_MESSAGE, "Error", JOptionPane.ERROR_MESSAGE);
                             return null;
                         }
+                        //TODO refernececell null geliyo =a1+a2 gibi durumda
                         boolean isLoop = Publisher.getInstance().getSubscribers().getOrDefault(selectedRow + "" + selectedColumn, new HashSet<>()).contains(referenceCell.getUniqueKey());
                         if (isLoop) {
                             JOptionPane.showMessageDialog(null, ErrorMessageConstants.LOOP_REFERENCE_ERROR_MESSAGE, "Error", JOptionPane.ERROR_MESSAGE);
@@ -176,13 +187,13 @@ public class FormulaParser {
                 formulaCalculator.setFormulaParserStrategy(new DivideCalculator());
                 return formulaCalculator.calculate(b, a);
             case "^":
-            case "POW":
+            case FormulaKeyConstants.POW_KEYWORD:
                 formulaCalculator.setFormulaParserStrategy(new PowerOfCalculator());
                 return formulaCalculator.calculate(b, a);
-            case "SQRT":
+            case FormulaKeyConstants.SQRT_KEYWORD:
                 formulaCalculator.setFormulaParserStrategy(new SquareRootCalculator());
                 return formulaCalculator.calculate(a);
-            case "AVG":
+            case FormulaKeyConstants.AVERAGE_KEYWORD:
                 formulaCalculator.setFormulaParserStrategy(new AverageCalculator());
                 return formulaCalculator.calculate(a, b);
             default:
@@ -200,9 +211,9 @@ public class FormulaParser {
             case "/":
                 return 2;
             case "^":
-            case "POW":
-            case "SQRT":
-            case "AVG":
+            case FormulaKeyConstants.POW_KEYWORD:
+            case FormulaKeyConstants.SQRT_KEYWORD:
+            case FormulaKeyConstants.AVERAGE_KEYWORD:
                 return 3;
             default:
                 throw new IllegalArgumentException("Invalid operator: " + operator);
@@ -220,9 +231,9 @@ public class FormulaParser {
             case "*":
             case "/":
             case "^":
-            case "POW":
-            case "SQRT":
-            case "AVG":
+            case FormulaKeyConstants.POW_KEYWORD:
+            case FormulaKeyConstants.SQRT_KEYWORD:
+            case FormulaKeyConstants.AVERAGE_KEYWORD:
                 return true;
             default:
                 return false;
