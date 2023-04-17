@@ -1,6 +1,6 @@
 # jetbrains-table-editor
 
-Table editor with formula support
+2 days challenge for table editor with formula support
 
 Patterns:
 
